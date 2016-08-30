@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html ng-app="doa">
+
+<head>
+
+    <meta charset="utf-8"/>
+    www/index.html:5
+    <!-- This is a wide open CSP declaration. To lock this down for production, see below. -->
+    <!--https://forums.adobe.com/thread/2103147-->
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self' data: gap: https://ssl.gstatic.com 'unsafe-eval'; style-src 'self' 'unsafe-inline'; media-src *">
+    <title>Doa</title>
+
+    <link rel="stylesheet" href="lib/onsenui/css/onsenui.css" type="text/css" media="all"/>
+    <link rel="stylesheet" href="lib/onsenui/css/onsen-css-components.css" type="text/css" media="all"/>
+    <link rel="stylesheet" href="css/app.css" type="text/css" media="all"/>
+    <link rel="stylesheet" href="lib/ng-progress/css/ngProgress.css">
+
+    <script type="text/javascript" src="lib/jquery-2.2.3.min.js"></script>
+    <script type="text/javascript" src="lib/angular/angular.min.js"></script>
+    <script type="text/javascript" src="lib/angular/angular-utf8-base64.min.js"></script>
+    <script type="text/javascript" src="lib/angular/ngStorage.min.js"></script>
+    <script type="text/javascript" src="lib/onsenui/js/onsenui.min.js"></script>
+    <script type="text/javascript" src="lib/onsenui/js/angular-onsenui.min.js"></script>
+    <script type="text/javascript" src="lib/fastclick.min.js"></script>
+    <script src="lib/ng-progress/js/ngprogress.min.js"></script>
+    <script type="text/javascript" src="cordova.js"></script>
+    <script type="text/javascript" src="js/app.js"></script>
+</head>
+<body class="page--sobre-page__background">
+
+<ons-sliding-menu main-page="login.html" menu-page="menu.html" max-slide-distance="260px" type="reveal" var="menu">
+</ons-sliding-menu>
+
+<ons-template id="menu.html">
+    <ons-page modifier="menu-page" ng-controller="LoginController">
+        <div class="profile-card">
+            <img class="profile-image" id="imgPerfil" ng-show="doador.foto != null">
+            <div class="profile-name">{{ doador.nome }}</div>
+            <div class="profile-id">{{ doador.tipoSanguineo }}</div>
+            <div class="profile-desc">{{ doador.email }}</div>
+
+        </div>
+
+
+        <ons-list class="menu-list">
+            <ons-list-item class="menu-item" ng-show="isLoggedIn()"
+                           ng-click="menu.setMainPage('sobre.html', {closeMenu: true})">
+                <ons-icon icon="ion-ios-information-outline" size="30px" style="margin-right: 5px;"></ons-icon>
+                Opcao 1
+            </ons-list-item>
+
+            <ons-list-item class="menu-item" ng-show="isLoggedIn()"
+                           ng-click="menu.setMainPage('sobre.html', {closeMenu: true})">
+                <ons-icon icon="ion-ios-information-outline" size="30px" style="margin-right: 5px;"></ons-icon>
+                Opcao 2
+            </ons-list-item>
+        </ons-list>
+
+        <br/>
+
+        <ons-list class="bottom-menu-list">
+            <ons-list-item class="bottom-menu-item" ng-show="isLoggedIn()"
+                           ng-click="menu.setMainPage('cadastro.html', {closeMenu: true})">
+                <ons-icon icon="ion-person"/>
+                Editar cadastro
+            </ons-list-item>
+            <ons-list-item class="bottom-menu-item" ng-show="!isLoggedIn()"
+                           ng-click="menu.setMainPage('login.html', {closeMenu: true})">
+                <ons-icon icon="fa-sign-in"/>
+                Entrar
+            </ons-list-item>
+            <ons-list-item class="bottom-menu-item" ng-click="menu.setMainPage('sobre.html', {closeMenu: true})">
+                <ons-icon icon="ion-ios-information-outline"/>
+                Sobre
+            </ons-list-item>
+            <ons-list-item class="bottom-menu-item" ng-show="isLoggedIn()"
+                           ng-click="logout()">
+                <ons-icon icon="fa-sign-out"/>
+                Sair
+            </ons-list-item>
+        </ons-list>
+    </ons-page>
+</ons-template>
+
+
+<ons-template id="login.html">
+    <ons-page modifier="login-page" ng-controller="LoginController">
+        <ons-toolbar>
+            <div class="left">
+                <ons-toolbar-button ng-click="menu.toggleMenu()">
+                    <ons-icon icon="fa-bars" size="30px"></ons-icon>
+                </ons-toolbar-button>
+            </div>
+        </ons-toolbar>
+
+        <form name="loginForm" ng-show="!isLoggedIn()">
+            <div class="login-page" style="width: 100%">
+                <div class="center" >Acesse sua conta</div>
+
+                <input type="email" class="text-input--transparent" ng-model="credentials.email"
+                       ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 350, 'blur': 0 } }"
+                       required ng-trim="true" style="width: 100%;" placeholder="E-mail"/>
+
+                <br>
+                <input type="password" class="text-input--transparent" ng-model="credentials.senha"
+                       ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 150, 'blur': 0 } }"
+                       required ng-trim="true" style="width: 100%;" placeholder="Senha"/>
+
+                <br><br>
+                <ons-button modifier="large--cta"
+                            ng-disabled="loginForm.$invalid || __loading" ng-click="login()">
+                    Entrar
+                </ons-button>
+
+                <br>
+                <ons-button modifier="large--cta"
+                            ng-click="menu.setMainPage('cadastro.html', {closeMenu: true})">
+                    Inscrever-se
+                </ons-button>
+                <!--<ons-button modifier="large" class="ligth-button">Esqueci minha senha</ons-button>-->
+            </div>
+        </form>
+
+    </ons-page>
+    <ons-template id="login-error-dialog.html">
+        <ons-dialog var="loginErrorDialog" cancelable modifier="error-dialog" ng-controller="LoginController">
+            <ons-icon icon="fa-exclamation-circle" size="50px"></ons-icon>
+            <p>{{ ::errorMessage }}</p>
+        </ons-dialog>
+    </ons-template>
+
+</ons-template>
+
+<ons-template id="cadastro.html">
+    <ons-page ng-controller="CadastroController">
+
+        <ons-toolbar class="toolbar">
+            <div class="left">
+                <ons-toolbar-button ng-click="menu.toggleMenu()">
+                    <ons-icon icon="fa-bars" modifier="doa"></ons-icon>
+                </ons-toolbar-button>
+            </div>
+            <!--<div class="right" if-loading>
+                <ons-toolbar-button>
+                    <ons-icon icon="ion-load-c" style="color: #134374;" spin="true" />
+                </ons-toolbar-button>
+            </div>>-->
+        </ons-toolbar>
+
+        <form name="cadastroForm" novalidate class="scroller">
+            <ons-list>
+                <ons-list-item style="padding: 0;">
+                    <div align="center"
+                         style="height: 200px;
+                            width: 100%;
+                            background: #666666;
+                            color: #E0E0E0;">
+                        <div id="btnCamera">
+                            <ons-icon icon="fa-user" size="100px" ng-click="showFotoOpcoesDialog()"></ons-icon>
+                            <br>
+                            <span>Insira sua Foto</span>
+                        </div>
+                        <img style="display:none; width: 100%; height: 100%;" id="smallImage"
+                             ng-click="showFotoOpcoesDialog()"/>
+                    </div>
+                </ons-list-item>
+                <ons-list-item><input type="text" class="text-input--transparent"
+                                      ng-model="doador.nome"
+                                      ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 350, 'blur': 0 } }"
+                                      required ng-trim="true" style="width: 100%;" placeholder="Nome completo"/><br>
+                    <ons-icon id="nomeError" icon="fa-exclamation-circle" style="color: #F44336;display: none; "
+                              size="15px"> Nome deve ser informado com mais de 10 caracteres.
+                    </ons-icon>
+                    <ons-icon id="nomeOk" icon="fa-check-circle" style="color: #1B5E20;display: none; "
+                              size="30px"></ons-icon>
+                </ons-list-item>
+
+                <ons-list-item><input type="text" class="text-input--transparent"
+                                      ng-model="doador.cpf"
+                                      ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 350, 'blur': 0 } }"
+                                      ng-trim="true" style="width: 100%;" placeholder="CPF apenas números"/>
+                </ons-list-item>
+
+                <ons-list-item><input type="email" class="text-input--transparent"
+                                      ng-model="doador.email"
+                                      ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 350, 'blur': 0 } }"
+                                      required ng-trim="true" style="width: 100%;" placeholder="E-mail"/>
+                </ons-list-item>
+
+                <ons-list-item><input type="tel" class="text-input--transparent"
+                                      ng-model="doador.telefone"
+                                      ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 350, 'blur': 0 } }"
+                                      required ng-trim="true" style="width: 100%;" placeholder="DDD + Telefone"/>
+                </ons-list-item>
+
+                <ons-list-item><input type="date" class="text-input--transparent"
+                                      ng-model="doador.nascimento"
+                                      ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 350, 'blur': 0 } }"
+                                      required ng-trim="true" style="width: 100%;"
+                                      placeholder="Data de nascimento"/>
+                </ons-list-item>
+
+                <ons-list-item><input type="text" class="text-input--transparent"
+                                      ng-model="doador.cidade.nome"
+                                      ng-click="showCidadesDialog()"
+                                      ng-readonly="true"
+                                      ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 350, 'blur': 0 } }"
+                                      required ng-trim="true" style="width: 100%;" placeholder="Cidade"/>
+                </ons-list-item>
+
+                <ons-list-item><input type="number" class="text-input--transparent"
+                                      ng-model="doador.cep"
+                                      ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 350, 'blur': 0 } }"
+                                      ng-trim="true" style="width: 100%;" placeholder="CEP apenas números"/>
+                </ons-list-item>
+
+                <ons-list-item><input type="text" class="text-input--transparent"
+                                      ng-model="doador.tipoSanguineo"
+                                      ng-readonly="true"
+                                      ng-click="showTipoSanguineoDialog()"
+                                      ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 350, 'blur': 0 } }"
+                                      required ng-trim="true" style="width: 100%;" placeholder="Tipo sanguineo"/>
+                </ons-list-item>
+
+                <ons-list-item><input type="password" class="text-input--transparent"
+                                      ng-model="doador.senha"
+                                      ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 350, 'blur': 0 } }"
+                                      required ng-trim="true" style="width: 100%;" placeholder="Senha"/>
+                </ons-list-item>
+
+                <ons-list-item><input type="password" class="text-input--transparent"
+                                      ng-model="confSenha"
+                                      ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 350, 'blur': 0 } }"
+                                      required ng-trim="true" style="width: 100%;" placeholder="Confirmar senha"/>
+                </ons-list-item>
+            </ons-list>
+
+            <div class="content-padded">
+                <ons-button modifier="large--cta" ng-click="saveNewDoador()"
+                            ng-disabled="cadastroForm.$invalid || ifLoading">
+                    <ons-icon icon="fa-user-plus" ng-if="doador.id == null"></ons-icon>
+                    <ons-icon icon="fa-check" ng-if="doador.id != null"></ons-icon>
+                    {{doador.id == null ? 'Inscrever-se' : 'Atualizar'}}
+                </ons-button>
+            </div>
+        </form>
+    </ons-page>
+
+    <ons-template id="cadastro-info-dialog.html">
+        <ons-dialog var="cadastroInfoDialog" cancelable modifier="info-dialog" ng-controller="CadastroController">
+            <ons-icon icon="fa-check-circle" size="50px"></ons-icon>
+            <p>{{ ::infoMessage }}</p>
+        </ons-dialog>
+    </ons-template>
+
+    <ons-template id="cadastro-error-dialog.html">
+        <ons-dialog var="loginErrorDialog" cancelable modifier="error-dialog" ng-controller="CadastroController">
+            <ons-icon icon="fa-exclamation-circle" size="50px"></ons-icon>
+            <p>{{ ::errorMessage }}</p>
+        </ons-dialog>
+    </ons-template>
+
+    <ons-template id="foto-opcoes.html">
+        <ons-dialog cancelable>
+            <ons-list>
+                <ons-list-item modifier="tappable" ng-show="{{doador.foto !== null}}" ng-click="removerFoto()">
+                    Remover foto
+                </ons-list-item>
+                <ons-list-item modifier="tappable" ng-click="tirarFoto()">
+                    Tirar uma foto
+                </ons-list-item>
+                <ons-list-item modifier="tappable" ng-click="escolherFoto()">
+                    Selecionar uma foto
+                </ons-list-item>
+            </ons-list>
+        </ons-dialog>
+    </ons-template>
+
+    <ons-template id="cidades.html">
+        <ons-dialog cancelable>
+            <ons-toolbar inline class="center">
+                <div class="center">
+                    <form ng-submit="findCidade()">
+                        <input id="searchCidade" type="search" class="search-input"
+                               style="width: 100%; margin: 6px auto 6px auto;"
+                               placeholder="Procurar cidade" ng-model="sDescricaoCidade"/>
+                    </form>
+                </div>
+            </ons-toolbar>
+
+            <ons-scroller style="height: 170px; width: 100%">
+                <ons-list>
+                    <ons-list-item modifier="tappable"
+                                   ng-repeat="cid in cidades track by $index"
+                                   ng-click="selectCidade($index)">
+                        <span style="color: #666;">{{cid.nome}} / {{cid.uf}}</span>
+                    </ons-list-item>
+                </ons-list>
+            </ons-scroller>
+        </ons-dialog>
+    </ons-template>
+
+    <ons-template id="tipo-sanguineo.html">
+        <ons-dialog cancelable>
+            <ons-toolbar inline>
+                <div class="center">
+                    Escolha um tipo sanguineo
+                </div>
+            </ons-toolbar>
+            <ons-scroller style="height: 170px; width: 100%">
+                <ons-list ng-controller="CadastroController">
+                    <ons-list-item ng-repeat="ts in tiposSanguineos track by $index"
+                                   ng-click="selectTipoSanguineo($index)"
+                                   modifier="tappable">
+                        <span style="color: #666;">{{ts}}</span>
+                    </ons-list-item>
+                </ons-list>
+            </ons-scroller>
+        </ons-dialog>
+    </ons-template>
+
+</ons-template>
+
+
+<ons-template id="sobre.html">
+    <ons-page>
+        <h1>Sobre Page</h1>
+    </ons-page>
+</ons-template>
+
+<ons-template id="home.html">
+    <ons-page ng-controller="HomeController">
+        <h1>HOME Page</h1>
+    </ons-page>
+</ons-template>
+
+</body>
+
+</html>

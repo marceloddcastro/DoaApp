@@ -1,0 +1,140 @@
+.page--sobre-page__background {
+    background-color: #a6a6a6;
+    color: white;
+}
+
+.icon{
+
+}
+
+.toolbar{
+
+}
+
+.toolbar-button{
+
+}
+
+.login-page{
+    text-align: center;
+    width: 90%;
+}
+
+input[type=email],input[type=password]{
+    display: block;
+    width: 100%;
+    margin: 0 auto;
+    outline: none;
+    height: 100%;
+    padding-top: 15px;
+    padding-bottom: 16px;
+}
+
+.ligth-button{
+    background-color: #EEEEEE;
+    color: #E53935;
+    font-size: 1.8em;
+}
+
+.red-button{
+    background-color: #E53935;
+    color: #EEEEEE;
+    font-size: 1.8em;
+}
+
+select {
+    padding:3px;
+    margin: 0;
+    -webkit-border-radius:4px;
+    -moz-border-radius:4px;
+    border-radius:4px;
+    background: #FFF;
+    color: #666;
+    border:none;
+    outline:none;
+    display: inline-block;
+    -webkit-appearance:none;
+    -moz-appearance:none;
+    appearance:none;
+    cursor:pointer;
+}
+
+.dialog-container--info-dialog {
+    background-color: #1B5E20;
+    color: white;
+    padding: 30px;
+    text-align: center;
+}
+
+.dialog-container--error-dialog {
+    background-color: darkred;
+    color: white;
+    padding: 20px 10px 10px 10px;
+    text-align: center;
+}
+
+
+
+
+
+
+
+.profile-card {
+    width: 100%;
+    min-height: 100px;
+    text-align: center;
+    color: white;
+    padding: 30px 0;
+    line-height: 1.4;
+    background-color: #33393c;
+    text-shadow: rgba(0, 0, 0, 0.4) 0px 1px 0px;
+}
+
+.profile-image {
+    height: 150px;
+    width: 150px;
+    border-radius: 50%;
+    -webkit-border-radius: 50%;
+    background-color: black;
+    border: 1px solid white;
+    box-shadow:rgba(0, 0, 0, 0.2) 0px 2px 0px 0px;
+    -webkit-box-shadow:rgba(0, 0, 0, 0.2) 0px 2px 0px 0px;
+}
+
+.profile-name {
+    margin: 20px 0 0 0;
+    font-weight: 600;
+    font-size: 17px;
+}
+
+.profile-id {
+    margin: 0 0 5px 0;
+    font-size: 14px;
+    opacity: 0.6;
+}
+
+.profile-desc {
+    font-size: 15px;
+    opacity: 0.6;
+    width: 90%;
+    text-align: center;
+    margin: 0 auto;
+}
+
+.info-col {
+    height: 60px;
+    line-height: 1;
+    padding: 12px 0 12px 4px;
+}
+
+.info-num {
+    font-size: 16px;
+    font-weight: 500;
+    opacity: 0.8;
+}
+
+.info-unit {
+    margin-top: 6px;
+    font-size: 14px;
+    opacity: 0.4;
+}

@@ -1,0 +1,11 @@
+<component name="ArtifactManager">
+  <artifact type="apk" name="Doa_Android">
+    <output-path>$PROJECT_DIR$/out/artifacts/Doa_Android</output-path>
+    <properties id="android-properties">
+      <options>
+        <option name="keyStoreUrl" value="file://" />
+      </options>
+    </properties>
+    <root id="archive" name="Doa_Android.apk" />
+  </artifact>
+</component>

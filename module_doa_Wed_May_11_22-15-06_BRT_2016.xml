@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="module_doa" default="compile.module.doa">
+  <dirname property="module.doa.basedir" file="${ant.file.module_doa}"/>
+  
+  <property name="module.jdk.home.doa" value=""/>
+  <property name="module.jdk.bin.doa" value=""/>
+  <property name="module.jdk.classpath.doa" value=""/>
+  
+  <property name="compiler.args.doa" value="-encoding UTF-8 -source 1.3 -target 1.3 ${compiler.args}"/>
+  
+  <property name="doa.output.dir" value="${module.doa.basedir}/out/production/Doa"/>
+  <property name="doa.testoutput.dir" value="${module.doa.basedir}/out/test/Doa"/>
+  
+  <path id="doa.module.bootclasspath">
+    <!-- Paths to be included in compilation bootclasspath -->
+  </path>
+  
+  <path id="doa.module.production.classpath"/>
+  
+  <path id="doa.runtime.production.module.classpath">
+    <pathelement location="${doa.output.dir}"/>
+  </path>
+  
+  <path id="doa.module.classpath">
+    <pathelement location="${doa.output.dir}"/>
+  </path>
+  
+  <path id="doa.runtime.module.classpath">
+    <pathelement location="${doa.testoutput.dir}"/>
+    <pathelement location="${doa.output.dir}"/>
+  </path>
+  
+  
+  <patternset id="excluded.from.module.doa">
+    <patternset refid="ignored.files"/>
+  </patternset>
+  
+  <patternset id="excluded.from.compilation.doa">
+    <patternset refid="excluded.from.module.doa"/>
+  </patternset>
+  
+  
+  <target name="compile.module.doa" depends="compile.module.doa.production,compile.module.doa.tests" description="Compile module Doa"/>
+  
+  <target name="compile.module.doa.production" depends="register.custom.compilers" description="Compile module Doa; production classes"/>
+  
+  <target name="compile.module.doa.tests" depends="register.custom.compilers,compile.module.doa.production" description="compile module Doa; test classes" unless="skip.tests"/>
+  
+  <target name="clean.module.doa" description="cleanup module">
+    <delete dir="${doa.output.dir}"/>
+    <delete dir="${doa.testoutput.dir}"/>
+  </target>
+</project>
